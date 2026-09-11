@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-main: #f4f6fb;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --glass-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+  }
+
+  .dark {
+    --bg-main: #070a13;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --glass-bg: rgba(13, 19, 34, 0.75);
+    --glass-border: rgba(0, 229, 255, 0.12);
+    --glass-shadow: 0 16px 45px -10px rgba(0, 0, 0, 0.7);
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Glassmorphism Presets */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-panel-subtle {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.dark .glass-panel-subtle {
+  background: rgba(19, 27, 46, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-card {
+  background: rgba(19, 27, 46, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  box-shadow: 0 6px 24px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* Oriental Hanko Seal / Stamp */
+.hanko-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #FF2A54;
+  color: #FF2A54;
+  border-radius: 4px;
+  font-family: serif;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  padding: 1px 4px;
+  transform: rotate(-3deg);
+  opacity: 0.95;
+  text-shadow: 0 0 8px rgba(255, 42, 84, 0.4);
+}
+
+.hanko-seal-gold {
+  border: 1.5px solid #FFD000;
+  color: #FFD000;
+  border-radius: 4px;
+  font-family: serif;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  padding: 1px 4px;
+  transform: rotate(-2deg);
+  text-shadow: 0 0 8px rgba(255, 208, 0, 0.4);
+}
+
+.hanko-seal-cyan {
+  border: 1.5px solid #00E5FF;
+  color: #00E5FF;
+  border-radius: 4px;
+  font-family: serif;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  padding: 1px 4px;
+  transform: rotate(-2deg);
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+/* 3D Card Transforms */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Holographic Foil Shader */
+.holo-foil {
+  position: relative;
+  overflow: hidden;
+}
+
+.holo-foil::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 208, 0, 0.4) 45%,
+    rgba(0, 229, 255, 0.45) 50%,
+    rgba(255, 42, 84, 0.4) 55%,
+    rgba(255, 255, 255, 0) 70%,
+    transparent 100%
+  );
+  background-size: 250% 250%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  z-index: 10;
+}
+
+.holo-foil:hover::before,
+.holo-foil.is-active::before {
+  opacity: 0.95;
+  animation: holoSheen 3s infinite linear;
+}
+
+.ultra-rare-glow {
+  box-shadow: 0 0 30px 4px rgba(255, 208, 0, 0.5), 0 0 60px 10px rgba(255, 42, 84, 0.35);
+}
+
+.rare-glow {
+  box-shadow: 0 0 25px 3px rgba(0, 229, 255, 0.45), 0 0 45px 6px rgba(0, 245, 155, 0.25);
+}
+
+@keyframes holoSheen {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
