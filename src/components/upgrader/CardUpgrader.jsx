@@ -21,6 +21,7 @@ import {
 import { useGame } from '../../context/GameContext';
 import { soundService } from '../../services/soundService';
 import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
 import confetti from 'canvas-confetti';
 
 const MULTIPLIER_PRESETS = [
