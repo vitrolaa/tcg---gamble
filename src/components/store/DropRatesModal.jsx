@@ -43,7 +43,7 @@ export const DropRatesModal = ({ onClose, selectedPack = null }) => {
           {packs.map(p => (
             <div key={p.id} className="p-4 rounded-2xl glass-panel-subtle">
               <div className="flex items-center justify-between mb-3">
-                <span className="font-bold text-slate-900 dark:text-white text-base">{p.name} ({p.subtitle})</span>
+                <span className="font-bold text-slate-900 dark:text-white text-base">{p.name} {p.subtitle ? `(${p.subtitle})` : p.series ? `(${p.series})` : ''}</span>
                 <span className="text-xs font-mono font-extrabold text-amber-600 dark:text-amber-400">{p.price} Moedas</span>
               </div>
 
@@ -54,28 +54,28 @@ export const DropRatesModal = ({ onClose, selectedPack = null }) => {
                     <span>Comum</span>
                     <span className="font-japanese">普</span>
                   </div>
-                  <span className="text-base font-black text-slate-800 dark:text-slate-200">{p.rates.common}%</span>
+                  <span className="text-base font-black text-slate-800 dark:text-slate-200">{p.rates?.common || 55}%</span>
                 </div>
                 <div className="p-2.5 rounded-xl glass-card flex flex-col">
                   <div className="flex items-center justify-between text-[11px] text-blue-500">
                     <span>Incomum</span>
                     <span className="font-japanese">特</span>
                   </div>
-                  <span className="text-base font-black text-blue-600 dark:text-blue-300">{p.rates.uncommon}%</span>
+                  <span className="text-base font-black text-blue-600 dark:text-blue-300">{p.rates?.uncommon || 30}%</span>
                 </div>
                 <div className="p-2.5 rounded-xl glass-card flex flex-col">
                   <div className="flex items-center justify-between text-[11px] text-purple-500">
                     <span>Rara</span>
                     <span className="font-japanese">稀</span>
                   </div>
-                  <span className="text-base font-black text-purple-600 dark:text-purple-300">{p.rates.rare}%</span>
+                  <span className="text-base font-black text-purple-600 dark:text-purple-300">{p.rates?.rare || 11}%</span>
                 </div>
                 <div className="p-2.5 rounded-xl glass-card flex flex-col">
                   <div className="flex items-center justify-between text-[11px] text-amber-500">
                     <span>Ultra Rara</span>
                     <span className="font-japanese">極</span>
                   </div>
-                  <span className="text-base font-black text-amber-600 dark:text-amber-300">{p.rates.ultraRare}%</span>
+                  <span className="text-base font-black text-amber-600 dark:text-amber-300">{p.rates?.ultraRare || 4}%</span>
                 </div>
               </div>
 

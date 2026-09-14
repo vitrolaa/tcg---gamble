@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Filter, Sparkles, CheckCircle2, AlertCircle, Layers } from 'lucide-react';
-import { POPULAR_SETS } from '../../services/tcgService';
+import { POPULAR_FALLBACK_SETS } from '../../services/tcgService';
 
 export const POKEMON_TYPES = [
   { name: 'Todos', kanji: '全' },
@@ -42,8 +42,10 @@ export const AlbumFilters = ({
   setStatusFilter,
   selectedSet,
   setSelectedSet,
+  setsList = POPULAR_FALLBACK_SETS,
   totalMatching
 }) => {
+  const displaySets = setsList && setsList.length > 0 ? setsList : POPULAR_FALLBACK_SETS;
   return (
     <div className="w-full flex flex-col gap-4 mb-6">
       
@@ -103,9 +105,9 @@ export const AlbumFilters = ({
               : 'glass-panel-subtle text-slate-400 border-slate-700 hover:text-white'
           }`}
         >
-          Todas as Expansões (Milhares de Cartas)
+          Todas as Expansões (Catálogo Completo)
         </button>
-        {POPULAR_SETS.map(set => (
+        {displaySets.map(set => (
           <button
             key={set.id}
             onClick={() => setSelectedSet(set.id)}
@@ -115,7 +117,7 @@ export const AlbumFilters = ({
                 : 'glass-panel-subtle text-slate-400 border-slate-700 hover:text-white'
             }`}
           >
-            <span>{set.icon}</span>
+            <span>{set.series?.includes('Scarlet') ? '⚡' : set.series?.includes('Sword') ? '⚔️' : '👑'}</span>
             <span>{set.name}</span>
           </button>
         ))}
