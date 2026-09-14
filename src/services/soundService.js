@@ -653,6 +653,36 @@ class SoundService {
       osc.stop(this.ctx.currentTime + idx * 0.06 + 0.4);
     });
   }
+
+  // --- CRASH MINI-GAME SFX ---
+  playCrashFlight(pitch = 300) {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(pitch, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(pitch * 1.05, this.ctx.currentTime + 0.1);
+
+    gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.1);
+  }
+
+  playCrashExplosion() {
+    this.playCardBurn();
+  }
+
+  playCashOut() {
+    this.playJackpotWin();
+  }
 }
 
 export const soundService = new SoundService();

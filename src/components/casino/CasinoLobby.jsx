@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Skull, Sparkles, Flame, Trophy, Coins, Clock, ShieldAlert, Dice5, Zap, Layers, Lock, AlertTriangle } from 'lucide-react';
+import { Skull, Sparkles, Flame, Trophy, Coins, Clock, ShieldAlert, Dice5, Zap, Layers, Lock, AlertTriangle, Rocket } from 'lucide-react';
 import { useGame } from '../../context/GameContext';
 import { RussianRoulette } from './RussianRoulette';
 import { PokemonBlackjack } from './PokemonBlackjack';
 import { PackDuel } from './PackDuel';
+import { CrashGame } from './CrashGame';
 import { JackpotVault } from './JackpotVault';
 import { LoanSharkModal } from './LoanSharkModal';
 import { Button } from '../ui/Button';
@@ -18,7 +19,11 @@ export const CasinoLobby = ({ onOpenStore }) => {
     showLoanModal
   } = useGame();
 
-  const [activeGame, setActiveGame] = useState('lobby'); // 'lobby' | 'roulette' | 'blackjack' | 'pack_duel'
+  const [activeGame, setActiveGame] = useState('lobby'); // 'lobby' | 'crash' | 'roulette' | 'blackjack' | 'pack_duel'
+
+  if (activeGame === 'crash') {
+    return <CrashGame onBack={() => setActiveGame('lobby')} />;
+  }
 
   if (activeGame === 'roulette') {
     return <RussianRoulette onBack={() => setActiveGame('lobby')} />;
@@ -55,7 +60,7 @@ export const CasinoLobby = ({ onOpenStore }) => {
             </h1>
 
             <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
-              Arrisque moedas e cartas do seu álbum em jogos de azar brutais. Sobreviva à Roleta Russa com queima de cartas, derrote a banca no 21 ou dispute o Duelo dos Pacotes!
+              Arrisque moedas e cartas do seu álbum em jogos de azar brutais. Decole no Crash Charizard, sobreviva à Roleta Russa com queima de cartas, derrote a banca no 21 ou dispute o Duelo dos Pacotes!
             </p>
           </div>
 
@@ -91,10 +96,46 @@ export const CasinoLobby = ({ onOpenStore }) => {
         <JackpotVault />
       </div>
 
-      {/* Main Games Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      {/* Main Games Grid (4 Games: Crash, Roulette, Blackjack, Pack Duel) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
         
-        {/* Game 1: Russian Roulette */}
+        {/* Game 1: Crash Charizard (NEW FEATURED) */}
+        <motion.div
+          whileHover={{ y: -6 }}
+          className="rounded-3xl glass-panel p-6 flex flex-col justify-between border border-orange-500/40 hover:border-orange-500/70 shadow-xl transition-all duration-300 relative overflow-hidden group bg-gradient-to-b from-orange-950/30 via-slate-950 to-slate-950"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/40 text-[10px] font-black uppercase tracking-wider">
+                Multiplicador 100x
+              </span>
+              <span className="text-[10px] font-japanese text-slate-400 font-bold">上昇</span>
+            </div>
+
+            <div className="w-14 h-14 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 mb-4 shadow-lg group-hover:scale-110 transition-transform">
+              <Rocket className="w-7 h-7 animate-bounce" />
+            </div>
+
+            <h3 className="text-xl font-display font-black text-white">Crash Charizard</h3>
+            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              O multiplicador sobe em tempo real! Aperte o Cash Out antes que o Charizard canse e exploda na tela. Ganância e adrenalina pura!
+            </p>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+            <span className="text-[11px] font-mono font-bold text-orange-400">Até 100.00x</span>
+            <Button
+              variant="torii"
+              size="sm"
+              onClick={() => setActiveGame('crash')}
+              className="bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black shadow-md"
+            >
+              Lançar Crash
+            </Button>
+          </div>
+        </motion.div>
+
+        {/* Game 2: Russian Roulette */}
         <motion.div
           whileHover={{ y: -6 }}
           className="rounded-3xl glass-panel p-6 flex flex-col justify-between border border-rose-500/30 hover:border-rose-500/60 shadow-xl transition-all duration-300 relative overflow-hidden group bg-gradient-to-b from-rose-950/20 to-transparent"
@@ -111,9 +152,9 @@ export const CasinoLobby = ({ onOpenStore }) => {
               <Skull className="w-7 h-7 animate-pulse" />
             </div>
 
-            <h3 className="text-xl font-display font-black text-white">Roleta Russa de Cartas</h3>
+            <h3 className="text-xl font-display font-black text-white">Roleta Russa</h3>
             <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-              Arrisque uma carta rara do inventário ou quantias massivas de moedas em um tambor de 6 posições. 4 disparos destroem a carta permanentemente, 2 garantem jackpot!
+              Arrisque cartas do álbum ou moedas em 6 câmaras. 4 disparos destroem a carta permanentemente, 2 garantem vitória!
             </p>
           </div>
 
@@ -130,7 +171,7 @@ export const CasinoLobby = ({ onOpenStore }) => {
           </div>
         </motion.div>
 
-        {/* Game 2: Pokémon Blackjack 21 */}
+        {/* Game 3: Pokémon Blackjack 21 */}
         <motion.div
           whileHover={{ y: -6 }}
           className="rounded-3xl glass-panel p-6 flex flex-col justify-between border border-indigo-500/30 hover:border-indigo-500/60 shadow-xl transition-all duration-300 relative overflow-hidden group bg-gradient-to-b from-indigo-950/20 to-transparent"
@@ -138,7 +179,7 @@ export const CasinoLobby = ({ onOpenStore }) => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-black uppercase tracking-wider">
-                Estratégia & Sorte
+                Estratégia & 21
               </span>
               <span className="text-[10px] font-japanese text-slate-400 font-bold">勝負</span>
             </div>
@@ -147,9 +188,9 @@ export const CasinoLobby = ({ onOpenStore }) => {
               <Zap className="w-7 h-7 text-amber-400" />
             </div>
 
-            <h3 className="text-xl font-display font-black text-white">Blackjack Pokémon 21</h3>
+            <h3 className="text-xl font-display font-black text-white">Blackjack 21</h3>
             <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-              Desafie o Dealer Giovanni da Equipe Rocket. Cartas Pokémon valem poder numérico. Peça mais cartas, pare no 21 ou dobre sua aposta no momento certo!
+              Desafie o Dealer Giovanni da Equipe Rocket. Cartas Pokémon valem poder numérico. Peça mais cartas, pare no 21 ou dobre sua aposta!
             </p>
           </div>
 
@@ -160,12 +201,12 @@ export const CasinoLobby = ({ onOpenStore }) => {
               size="sm"
               onClick={() => setActiveGame('blackjack')}
             >
-              Jogar Blackjack
+              Jogar 21
             </Button>
           </div>
         </motion.div>
 
-        {/* Game 3: Pack Duel */}
+        {/* Game 4: Pack Duel */}
         <motion.div
           whileHover={{ y: -6 }}
           className="rounded-3xl glass-panel p-6 flex flex-col justify-between border border-amber-500/30 hover:border-amber-500/60 shadow-xl transition-all duration-300 relative overflow-hidden group bg-gradient-to-b from-amber-950/20 to-transparent"
@@ -173,7 +214,7 @@ export const CasinoLobby = ({ onOpenStore }) => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black uppercase tracking-wider">
-                2 Modos de Jogo
+                2 Modos
               </span>
               <span className="text-[10px] font-japanese text-slate-400 font-bold">対決</span>
             </div>
@@ -184,19 +225,19 @@ export const CasinoLobby = ({ onOpenStore }) => {
 
             <h3 className="text-xl font-display font-black text-white">Duelo de Pacotes</h3>
             <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-              Dispute no Modo High Roller para tirar a melhor média de raridade, ou no sádico Modo Azarão buscando 100% cartas lixo para levar o jackpot de 12x!
+              Dispute no Modo High Roller para a melhor raridade ou no Modo Azarão buscando 100% cartas lixo para levar 12x!
             </p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold text-amber-400">Jackpot: até 12.0x</span>
+            <span className="text-[11px] font-mono font-bold text-amber-400">Até 12.0x</span>
             <Button
               variant="torii"
               size="sm"
               onClick={() => setActiveGame('pack_duel')}
               className="bg-amber-500 text-slate-950 font-black"
             >
-              Entrar no Duelo
+              Duelo
             </Button>
           </div>
         </motion.div>
