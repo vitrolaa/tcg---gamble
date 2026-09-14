@@ -11,12 +11,13 @@ import { useGame } from '../../context/GameContext';
 const CARDS_PER_PAGE = 24;
 
 export const Album = ({ onOpenStore, onOpenRecycle }) => {
-  const { cardPool, inventory, isLoadingPool } = useGame();
+  const { cardPool, inventory, isLoadingPool, activeSetId, setActiveSetId } = useGame();
 
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState('Todos');
   const [selectedRarity, setSelectedRarity] = useState('Todas');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedSet, setSelectedSet] = useState(activeSetId || 'all');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCardForModal, setSelectedCardForModal] = useState(null);
 
@@ -24,23 +25,35 @@ export const Album = ({ onOpenStore, onOpenRecycle }) => {
     if (!cardPool) return [];
 
     return cardPool.filter(card => {
+      // Set/Expansion Filter
+      if (selectedSet !== 'all') {
+        if (card.setId !== selectedSet && !card.id?.startsWith(selectedSet)) {
+          return false;
+        }
+      }
+
+      // Text Search
       if (search.trim()) {
         const query = search.toLowerCase().trim();
         const matchesName = card.name?.toLowerCase().includes(query);
         const matchesNumber = card.localId?.toString().includes(query);
-        if (!matchesName && !matchesNumber) return false;
+        const matchesSet = card.setName?.toLowerCase().includes(query);
+        if (!matchesName && !matchesNumber && !matchesSet) return false;
       }
 
+      // Type Filter
       if (selectedType !== 'Todos') {
         const types = card.types || [];
         const hasType = types.some(t => t.toLowerCase() === selectedType.toLowerCase());
         if (!hasType) return false;
       }
 
+      // Rarity Filter
       if (selectedRarity !== 'Todas') {
         if (card.rarity !== selectedRarity) return false;
       }
 
+      // Status Filter
       const item = inventory[card.id];
       const isOwned = item && item.count > 0;
       const isDuplicate = item && item.count > 1;
@@ -51,7 +64,7 @@ export const Album = ({ onOpenStore, onOpenRecycle }) => {
 
       return true;
     });
-  }, [cardPool, inventory, search, selectedType, selectedRarity, statusFilter]);
+  }, [cardPool, inventory, search, selectedType, selectedRarity, statusFilter, selectedSet]);
 
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / CARDS_PER_PAGE));
   const currentCards = useMemo(() => {
@@ -109,6 +122,11 @@ export const Album = ({ onOpenStore, onOpenRecycle }) => {
         setSelectedRarity={setSelectedRarity}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
+        selectedSet={selectedSet}
+        setSelectedSet={(set) => {
+          setSelectedSet(set);
+          setCurrentPage(1);
+        }}
         totalMatching={filteredCards.length}
       />
 
@@ -189,8 +207,8 @@ export const Album = ({ onOpenStore, onOpenRecycle }) => {
 
                       {/* Bottom Status */}
                       <div className="w-full text-center">
-                        <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase font-japanese">
-                          未所持 (Não Obtida)
+                        <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase font-japanese truncate block">
+                          {card.setName || 'TCGDex'}
                         </span>
                       </div>
                     </motion.div>

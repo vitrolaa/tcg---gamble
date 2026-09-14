@@ -53,7 +53,7 @@ export const PackStore = ({ onPackOpened }) => {
             </div>
             
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-slate-900 dark:text-white tracking-tight">
-              Loja Oficial de <span className="text-orient-torii dark:text-poke-yellow">Boosters</span>
+              Loja Oficial de <span className="text-orient-torii dark:text-poke-red">Boosters</span>
             </h1>
             
             <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">

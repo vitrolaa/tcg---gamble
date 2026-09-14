@@ -5,6 +5,9 @@ import { Album } from './components/album/Album';
 import { PackStore } from './components/store/PackStore';
 import { CardUpgrader } from './components/upgrader/CardUpgrader';
 import { PokeFishing } from './components/fishing/PokeFishing';
+import { CasinoLobby } from './components/casino/CasinoLobby';
+import { DespairModal } from './components/casino/DespairModal';
+import { LoanSharkModal } from './components/casino/LoanSharkModal';
 import { BoosterPackOpening } from './components/gacha/BoosterPackOpening';
 import { RecycleModal } from './components/inventory/RecycleModal';
 import { ToastContainer } from './components/ui/ToastContainer';
@@ -13,8 +16,8 @@ import { Achievements } from './components/achievements/Achievements';
 import { GameProvider, useGame } from './context/GameContext';
 
 const MainApp = () => {
-  const { theme } = useGame();
-  const [currentTab, setCurrentTab] = useState('album'); // 'album' | 'store' | 'upgrader' | 'fishing'
+  const { theme, showDespairModal, setShowDespairModal, showLoanModal, setShowLoanModal } = useGame();
+  const [currentTab, setCurrentTab] = useState('album'); // 'album' | 'casino' | 'store' | 'upgrader' | 'fishing'
   const [activePackOpening, setActivePackOpening] = useState(null);
   const [isRecycleModalOpen, setIsRecycleModalOpen] = useState(false);
 
@@ -73,12 +76,19 @@ const MainApp = () => {
             </div>
           </div>
         )}
+
+        {currentTab === 'casino' && (
+          <CasinoLobby onOpenStore={() => setCurrentTab('store')} />
+        )}
+
         {currentTab === 'store' && (
           <PackStore onPackOpened={handlePackOpened} />
         )}
+
         {currentTab === 'upgrader' && (
           <CardUpgrader onOpenAlbum={() => setCurrentTab('album')} />
         )}
+
         {currentTab === 'fishing' && (
           <PokeFishing />
         )}
@@ -95,7 +105,7 @@ const MainApp = () => {
             setActivePackOpening(null);
             setCurrentTab('album');
           }}
-          onOpenAnother={(pack) => {
+          onOpenAnother={() => {
             setActivePackOpening(null);
             setCurrentTab('store');
           }}
@@ -105,6 +115,16 @@ const MainApp = () => {
       {/* Recycle & Duplicates Sell Modal */}
       {isRecycleModalOpen && (
         <RecycleModal onClose={() => setIsRecycleModalOpen(false)} />
+      )}
+
+      {/* Despair Mode Recovery Modal */}
+      {showDespairModal && (
+        <DespairModal onClose={() => setShowDespairModal(false)} />
+      )}
+
+      {/* Loan Shark Modal */}
+      {showLoanModal && (
+        <LoanSharkModal onClose={() => setShowLoanModal(false)} />
       )}
 
       {/* Toast Feedback Layer */}

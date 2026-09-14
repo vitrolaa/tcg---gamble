@@ -1,4 +1,4 @@
-// Web Audio API Synthesizer for rich Pokémon TCG Sound Effects, Fusion Forge & Fishing
+// Web Audio API Synthesizer for rich Pokémon TCG Sound Effects, Casino Mini-Games & Retentive SFX
 class SoundService {
   constructor() {
     this.ctx = null;
@@ -21,6 +21,7 @@ class SoundService {
     this.isMuted = muted;
   }
 
+  // --- BOOSTER PACK SOUNDS ---
   playPackShake() {
     if (this.isMuted) return;
     this.init();
@@ -206,6 +207,311 @@ class SoundService {
     osc2.stop(this.ctx.currentTime + 0.35);
   }
 
+  // --- CASINO MINI-GAMES: RUSSIAN ROULETTE ---
+  playCylinderSpin() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const totalClicks = 18;
+    for (let i = 0; i < totalClicks; i++) {
+      const delay = Math.pow(i / totalClicks, 1.8) * 1.8;
+      setTimeout(() => {
+        if (!this.ctx || this.isMuted) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(1200 + Math.random() * 200, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.02);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.02);
+      }, delay * 1000);
+    }
+  }
+
+  playDryClick() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    // Metallic empty click
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, this.ctx.currentTime + 0.04);
+
+    gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.06);
+  }
+
+  playCardBurn() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    // Fiery blast / explosion
+    const bufferSize = this.ctx.sampleRate * 0.8;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.7);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.8);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start();
+    noise.stop(this.ctx.currentTime + 0.8);
+
+    // Deep sub drop
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(160, this.ctx.currentTime);
+    subOsc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.7);
+
+    subGain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+    subGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.7);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.ctx.destination);
+
+    subOsc.start();
+    subOsc.stop(this.ctx.currentTime + 0.7);
+  }
+
+  playJackpotWin() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const arpeggio = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98, 2093.0];
+    arpeggio.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.08);
+
+      gain.gain.setValueAtTime(0, this.ctx.currentTime + idx * 0.08);
+      gain.gain.linearRampToValueAtTime(0.2, this.ctx.currentTime + idx * 0.08 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.5);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(this.ctx.currentTime + idx * 0.08);
+      osc.stop(this.ctx.currentTime + idx * 0.08 + 0.5);
+    });
+  }
+
+  // --- CASINO MINI-GAMES: BLACKJACK ---
+  playCardSlide() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const bufferSize = this.ctx.sampleRate * 0.12;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2200, this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(900, this.ctx.currentTime + 0.12);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start();
+    noise.stop(this.ctx.currentTime + 0.12);
+  }
+
+  playChipBet() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    [1200, 1600].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.03);
+      gain.gain.setValueAtTime(0.15, this.ctx.currentTime + i * 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.03 + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(this.ctx.currentTime + i * 0.03);
+      osc.stop(this.ctx.currentTime + i * 0.03 + 0.08);
+    });
+  }
+
+  playBlackjackWin() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const chords = [
+      { f: 587.33, t: 0 },
+      { f: 739.99, t: 0.1 },
+      { f: 880.00, t: 0.2 },
+      { f: 1174.66, t: 0.32 }
+    ];
+
+    chords.forEach(c => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(c.f, this.ctx.currentTime + c.t);
+      gain.gain.setValueAtTime(0.18, this.ctx.currentTime + c.t);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + c.t + 0.4);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(this.ctx.currentTime + c.t);
+      osc.stop(this.ctx.currentTime + c.t + 0.4);
+    });
+  }
+
+  // --- LOAN SHARK & CONFISCATION ---
+  playLoanSharkAlert() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const tones = [440, 415.3, 392, 369.99]; // Descending ominous chromatic
+    tones.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.15);
+
+      gain.gain.setValueAtTime(0.14, this.ctx.currentTime + idx * 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.15 + 0.25);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(this.ctx.currentTime + idx * 0.15);
+      osc.stop(this.ctx.currentTime + idx * 0.15 + 0.25);
+    });
+  }
+
+  playConfiscateAlarm() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    for (let i = 0; i < 3; i++) {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(900, this.ctx.currentTime + i * 0.18);
+      osc.frequency.setValueAtTime(450, this.ctx.currentTime + i * 0.18 + 0.08);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime + i * 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.18 + 0.15);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(this.ctx.currentTime + i * 0.18);
+      osc.stop(this.ctx.currentTime + i * 0.18 + 0.15);
+    }
+  }
+
+  // --- VAULT ACCUMULATOR ---
+  playVaultCoin() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1480, this.ctx.currentTime);
+    osc.frequency.setValueAtTime(1760, this.ctx.currentTime + 0.04);
+
+    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.15);
+  }
+
+  playVaultBurst() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    this.playUltraRareFanfare();
+    setTimeout(() => this.playCoinGain(), 300);
+    setTimeout(() => this.playJackpotWin(), 600);
+  }
+
+  // --- DESPAIR MODE TRIGGER ---
+  playDespairAlarm() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(220, this.ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(440, this.ctx.currentTime + 0.3);
+    osc.frequency.linearRampToValueAtTime(220, this.ctx.currentTime + 0.6);
+
+    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.65);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.65);
+  }
+
+  // --- UPGRADER & FISHING SFX ---
   playForgeHum() {
     if (this.isMuted) return;
     this.init();
@@ -251,7 +557,6 @@ class SoundService {
     });
   }
 
-  // FISHING SFX
   playCastRod() {
     if (this.isMuted) return;
     this.init();
@@ -299,7 +604,6 @@ class SoundService {
     this.init();
     if (!this.ctx) return;
 
-    // Splash noise
     const bufferSize = this.ctx.sampleRate * 0.3;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);

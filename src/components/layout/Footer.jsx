@@ -18,17 +18,7 @@ export const Footer = () => {
             </span>
             <span className="hanko-seal text-[8px]">公式版</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Desenvolvido com React, Vite, Tailwind CSS e integração oficial com a{' '}
-            <a
-              href="https://tcgdex.dev/pt-br"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-orient-torii dark:text-poke-yellow hover:underline inline-flex items-center gap-1 font-semibold"
-            >
-              TCGDex API <ExternalLink className="w-3 h-3" />
-            </a>
-          </p>
+          
         </div>
 
         {/* Center: Japanese Heritage Note */}

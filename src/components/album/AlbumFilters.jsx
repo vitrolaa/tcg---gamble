@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Filter, Sparkles, CheckCircle2, AlertCircle, Layers } from 'lucide-react';
+import { POPULAR_SETS } from '../../services/tcgService';
 
 export const POKEMON_TYPES = [
   { name: 'Todos', kanji: '全' },
@@ -39,6 +40,8 @@ export const AlbumFilters = ({
   setSelectedRarity,
   statusFilter,
   setStatusFilter,
+  selectedSet,
+  setSelectedSet,
   totalMatching
 }) => {
   return (
@@ -54,7 +57,7 @@ export const AlbumFilters = ({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por nome ou número (#001)..."
+            placeholder="Buscar por nome, número (#001) ou expansão..."
             className="w-full pl-10 pr-4 py-2.5 rounded-2xl glass-panel-subtle text-slate-900 dark:text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-orient-torii/40 dark:focus:ring-poke-yellow/40 transition-all shadow-sm"
           />
           {search && (
@@ -85,6 +88,37 @@ export const AlbumFilters = ({
           ))}
         </div>
 
+      </div>
+
+      {/* Expansion Set Filter Chips */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 shrink-0 font-display">
+          Expansão:
+        </span>
+        <button
+          onClick={() => setSelectedSet('all')}
+          className={`px-3 py-1 rounded-xl text-xs font-bold shrink-0 transition-all border cursor-pointer ${
+            selectedSet === 'all'
+              ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm'
+              : 'glass-panel-subtle text-slate-400 border-slate-700 hover:text-white'
+          }`}
+        >
+          Todas as Expansões (Milhares de Cartas)
+        </button>
+        {POPULAR_SETS.map(set => (
+          <button
+            key={set.id}
+            onClick={() => setSelectedSet(set.id)}
+            className={`px-3 py-1 rounded-xl text-xs font-semibold shrink-0 transition-all border cursor-pointer flex items-center gap-1.5 ${
+              selectedSet === set.id
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 border-transparent shadow-sm font-bold'
+                : 'glass-panel-subtle text-slate-400 border-slate-700 hover:text-white'
+            }`}
+          >
+            <span>{set.icon}</span>
+            <span>{set.name}</span>
+          </button>
+        ))}
       </div>
 
       {/* Secondary Row: Types & Rarities Pill Chips */}
@@ -140,14 +174,15 @@ export const AlbumFilters = ({
 
       {/* Matching summary */}
       <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between">
-        <span>Exibindo {totalMatching} cartas no catálogo</span>
-        {(search || selectedType !== 'Todos' || selectedRarity !== 'Todas' || statusFilter !== 'all') && (
+        <span>Exibindo <strong>{totalMatching}</strong> cartas no catálogo</span>
+        {(search || selectedType !== 'Todos' || selectedRarity !== 'Todas' || statusFilter !== 'all' || selectedSet !== 'all') && (
           <button
             onClick={() => {
               setSearch('');
               setSelectedType('Todos');
               setSelectedRarity('Todas');
               setStatusFilter('all');
+              setSelectedSet('all');
             }}
             className="text-orient-torii dark:text-poke-yellow hover:underline cursor-pointer font-bold"
           >

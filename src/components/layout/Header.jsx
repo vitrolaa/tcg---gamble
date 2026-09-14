@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Coins, Sparkles, Volume2, VolumeX, Gift, Layers, ShoppingBag, RefreshCw, Sun, Moon, Zap, Waves, DollarSign } from 'lucide-react';
+import { Coins, Sparkles, Volume2, VolumeX, Gift, Layers, ShoppingBag, RefreshCw, Sun, Moon, Zap, Waves, DollarSign, Dices, Lock, Clock } from 'lucide-react';
 import { useGame } from '../../context/GameContext';
 import { Button } from '../ui/Button';
 
@@ -9,6 +9,8 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
     theme,
     toggleTheme,
     coins,
+    vaultCoins,
+    loanDebt,
     claimDailyReward,
     canClaimDaily,
     getDailyTimeRemaining,
@@ -45,7 +47,7 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-display font-black text-lg sm:text-2xl tracking-tight text-slate-900 dark:text-white">
-                  POKÉ<span className="text-orient-torii dark:text-poke-yellow">VAULT</span>
+                  POKÉ<span className="text-orient-torii dark:text-poke-red">VAULT</span>
                 </span>
                 <span className="hanko-seal text-[8px] sm:text-[9px] dark:hanko-seal-gold hidden sm:inline-flex">
                   図鑑
@@ -54,12 +56,12 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
               <p className="text-[9px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:flex items-center gap-1">
                 <span>ポケモンカード</span>
                 <span className="text-slate-400">•</span>
-                <span>TCGDex Oficial</span>
+                <span>Milhares de Cartas</span>
               </p>
             </div>
           </div>
 
-          {/* Center Navigation Tabs (Álbum / Loja / Upgrader / Pescaria / Vender) */}
+          {/* Center Navigation Tabs (Álbum / Cassino / Loja / Upgrader / Pescaria / Vender) */}
           <nav className="hidden lg:flex items-center gap-1 p-1 rounded-2xl bg-slate-200/50 dark:bg-slate-900/60 border border-slate-300/40 dark:border-slate-800/80">
             <button
               onClick={() => setCurrentTab('album')}
@@ -76,6 +78,22 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
               </span>
             </button>
 
+            {/* CASINO TAB */}
+            <button
+              onClick={() => setCurrentTab('casino')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                currentTab === 'casino'
+                  ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-slate-950 font-black shadow-md border border-amber-400'
+                  : 'text-amber-500 hover:text-amber-400'
+              }`}
+            >
+              <Dices className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '4s' }} />
+              <span>Cassino VIP</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-black">
+                {loanDebt.active ? '⚠️ DÍVIDA' : 'ALTO RISCO'}
+              </span>
+            </button>
+
             <button
               onClick={() => setCurrentTab('store')}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
@@ -85,7 +103,7 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
               }`}
             >
               <ShoppingBag className="w-3.5 h-3.5 text-orient-yamabuki dark:text-poke-yellow" />
-              <span>Loja Boosters</span>
+              <span>Loja de Boosters</span>
             </button>
 
             <button
@@ -97,7 +115,7 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
               }`}
             >
               <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-              <span>Forja / Upgrader</span>
+              <span>Upgrader</span>
             </button>
 
             <button
@@ -109,7 +127,7 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
               }`}
             >
               <Waves className="w-3.5 h-3.5 text-cyan-500 animate-bounce" />
-              <span>Pescaria (Ganhar $)</span>
+              <span>Pescaria</span>
             </button>
 
             <button
@@ -117,7 +135,7 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30"
             >
               <DollarSign className="w-3.5 h-3.5" />
-              <span>Vender Cartas</span>
+              <span>Vender</span>
               {stats.totalDuplicates > 0 && (
                 <span className="px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 font-black text-[9px]">
                   {stats.totalDuplicates}
@@ -126,9 +144,22 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
             </button>
           </nav>
 
-          {/* Right Actions: Coins, Daily Claim, Recycle, Theme, Sound */}
+          {/* Right Actions: Coins, Vault Ticker, Daily Claim, Theme, Sound */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             
+            {/* Live Vault Ticker (Hidden on very small screens) */}
+            <div
+              onClick={() => setCurrentTab('casino')}
+              title="Cofre Acumulador do Cassino"
+              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 cursor-pointer hover:scale-105 transition-transform"
+            >
+              <Lock className="w-3.5 h-3.5 animate-pulse text-amber-400" />
+              <div className="flex flex-col text-right">
+                <span className="text-[8px] font-bold uppercase text-amber-500/80 -mb-0.5">Cofre</span>
+                <span className="text-xs font-mono font-black text-amber-300">{vaultCoins.toLocaleString('pt-BR')}</span>
+              </div>
+            </div>
+
             {/* Coins Display */}
             <motion.div
               whileHover={{ scale: 1.03 }}
@@ -197,6 +228,17 @@ export const Header = ({ currentTab, setCurrentTab, onOpenRecycleModal }) => {
           >
             <Layers className="w-3 h-3" />
             Álbum
+          </button>
+          <button
+            onClick={() => setCurrentTab('casino')}
+            className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl text-[10px] font-bold transition-all whitespace-nowrap ${
+              currentTab === 'casino'
+                ? 'bg-amber-500 text-slate-950 shadow-sm font-black'
+                : 'text-amber-500 font-bold'
+            }`}
+          >
+            <Dices className="w-3 h-3" />
+            Cassino
           </button>
           <button
             onClick={() => setCurrentTab('store')}
